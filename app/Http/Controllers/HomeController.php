@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Post;
+use App\Comment;
 
 class HomeController extends Controller
 {
@@ -11,10 +13,10 @@ class HomeController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth');
+    // }
 
     /**
      * Show the application dashboard.
@@ -23,6 +25,22 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+
+        $posts = Post::get();
+
+        // die(var_dump($posts));
+
+        return view('index', compact('posts'));
     }
+
+    public function post($slug) 
+    {
+
+        $post = Post::where('slug', '=', $slug)->firstOrFail();
+        $comments = Comment::with('users')->where('commentable_id', $post->id)->get();
+
+        return view('post', compact('post', 'comments'));
+
+    }
+
 }

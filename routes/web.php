@@ -13,15 +13,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
+Route::get('/', 'HomeController@index')->middleware('verified');
+Route::get('/blog/{slug}', 'HomeController@post');
+Route::post('/comment/store', 'CommentController@store')->name('comment.add');
+Route::post('/reply/store', 'CommentController@replystore')->name('reply.add');
 
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
 });
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', 'HomeController@index')->middleware('verified')->name('home');
